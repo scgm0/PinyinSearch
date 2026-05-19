@@ -1,0 +1,15 @@
+{
+    "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+    "type": "Code",
+    "modid": "pinyinsearch",
+    "name": "拼音搜索",
+    "side": "Client",
+    "authors": [
+        "神麤詭末"
+    ],
+    "description": "在复古物语中使用拼音搜索信息",
+    "version": "1.0.0",
+    "dependencies": {
+        "game": "1.22.2"
+    }
+}
