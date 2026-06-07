@@ -12,6 +12,7 @@
 {
   "EnableFuzzyInitials": true, // 开启声母模糊音
   "EnableFuzzyFinals": true, // 开启韵母模糊音
+  "ExactMatchForHanzi": true, // 汉字精准匹配
 }
 ```
 

@@ -25,11 +25,13 @@ public class PinyinSearchModSystem : ModSystem {
 		api.StoreModConfig(Config, "PinyinSearch.json");
 
 		try {
+			api.Logger.Debug("[PinyinSearch] 加载拼音数据中...");
 			var t = Stopwatch.StartNew();
 			Matcher = new(HanziPinyinMap.Default,
 				new() {
 					EnableFuzzyInitials = Config.EnableFuzzyInitials,
-					EnableFuzzyFinals = Config.EnableFuzzyFinals
+					EnableFuzzyFinals = Config.EnableFuzzyFinals,
+					ExactMatchForHanzi = Config.ExactMatchForHanzi,
 				});
 			t.Stop();
 			api.Logger.Debug($"[PinyinSearch] 加载拼音数据完成，耗时{t.ElapsedMilliseconds}ms");
@@ -48,6 +50,7 @@ public class PinyinSearchModSystem : ModSystem {
 			api.Logger.Notification("[PinyinSearch] 已启用betterhandbook兼容");
 		}
 
+		api.Logger.Notification($"[PinyinSearch] 声母模糊音: {Config.EnableFuzzyInitials} 韵母模糊音: {Config.EnableFuzzyFinals} 汉字精确匹配: {Config.ExactMatchForHanzi}");
 		api.Logger.Notification("[PinyinSearch] 拼音搜索初始化完成");
 	}
 
