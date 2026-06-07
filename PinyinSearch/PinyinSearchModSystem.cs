@@ -14,28 +14,28 @@ public class PinyinSearchModSystem : ModSystem {
 	public static ICoreClientAPI? Api { get; private set; }
 	public static Config? Config { get; private set; }
 
-	public override async void StartClientSide(ICoreClientAPI api) {
-		Api = api;
+	public override void StartPre(ICoreAPI api) {
+		Api = api as ICoreClientAPI;
 		try {
 			Config = api.LoadModConfig<Config?>("PinyinSearch.json") ?? new();
 		} catch (Exception) {
 			Config = new();
 		}
+
 		api.StoreModConfig(Config, "PinyinSearch.json");
 
-		await Task.Run(() => {
-			try {
-				var t = Stopwatch.StartNew();
-				Matcher = new (HanziPinyinMap.Default, new() {
+		try {
+			var t = Stopwatch.StartNew();
+			Matcher = new(HanziPinyinMap.Default,
+				new() {
 					EnableFuzzyInitials = Config.EnableFuzzyInitials,
 					EnableFuzzyFinals = Config.EnableFuzzyFinals
 				});
-				t.Stop();
-				api.Logger.Debug($"[PinyinSearch] 加载拼音数据完成，耗时{t.ElapsedMilliseconds}ms");
-			} catch (Exception e) {
-				api.Logger.Error($"[PinyinSearch] 加载拼音数据失败: {e.Message}");
-			}
-		});
+			t.Stop();
+			api.Logger.Debug($"[PinyinSearch] 加载拼音数据完成，耗时{t.ElapsedMilliseconds}ms");
+		} catch (Exception e) {
+			api.Logger.Error($"[PinyinSearch] 加载拼音数据失败: {e.Message}");
+		}
 
 		if (Matcher == null) {
 			api.Logger.Error("[PinyinSearch] 拼音匹配器初始化失败");
@@ -43,6 +43,12 @@ public class PinyinSearchModSystem : ModSystem {
 		}
 
 		_harmony.PatchAllUncategorized();
+		if (api.ModLoader.IsModEnabled("betterhandbook")) {
+			_harmony.PatchCategory("betterhandbook");
+			api.Logger.Notification("[PinyinSearch] 已启用betterhandbook兼容");
+		}
+
+		api.Logger.Notification("[PinyinSearch] 拼音搜索初始化完成");
 	}
 
 	public override void Dispose() { _harmony.UnpatchAll(); }

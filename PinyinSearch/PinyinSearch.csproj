@@ -9,6 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Reference Include="BetterHandbook">
+            <HintPath>../Lib/BetterHandbook.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
         <Reference Include="VintagestoryAPI">
             <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
             <Private>false</Private>
