@@ -10,15 +10,19 @@ public static class GuiDialogPostfix {
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "currentSearchText")]
 	public static extern string GetCurrentSearchText(GuiDialogHandbook instance);
 
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "currentSearchText")]
+	public static extern string GetCurrentSearchText(GuiDialogTrader instance);
+
 	[HarmonyPostfix]
 	public static void GuiDialogHandbookPostfix(
 		GuiDialog __instance,
 		ref int __result,
 		string text) {
-		if (__instance is not GuiDialogHandbook handbook) {
-			return;
+		switch (__instance) {
+			case GuiDialogHandbook handbook:
+				__result += PinyinSearchModSystem.Matcher?.CountMatches(text, GetCurrentSearchText(handbook)) * 100 ?? 0; break;
+			case GuiDialogTrader trader:
+				__result += PinyinSearchModSystem.Matcher?.CountMatches(text, GetCurrentSearchText(trader)) * 100 ?? 0; break;
 		}
-
-		__result += PinyinSearchModSystem.Matcher?.CountMatches(text, GetCurrentSearchText(handbook)) * 100 ?? 0;
 	}
 }
