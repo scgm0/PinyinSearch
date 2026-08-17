@@ -31,7 +31,24 @@ public static class GuiElementItemSlotGridBaseTranspilerPatch {
 				if (i + 1 < codes.Count &&
 					(codes[i + 1].opcode == OpCodes.Brfalse || codes[i + 1].opcode == OpCodes.Brfalse_S)) {
 					brfalseIndex = i + 1;
-					endOfIfLabel = (Label)codes[i + 1].operand;
+					if (codes[i + 1].operand is Label label) {
+						endOfIfLabel = label;
+					} else {
+						var found = false;
+						for (var j = brfalseIndex + 1; j < codes.Count; j++) {
+							if (codes[j].opcode == OpCodes.Callvirt &&
+								(codes[j].operand as MethodInfo)?.Name == "MoveNext") {
+								endOfIfLabel = il.DefineLabel();
+								codes[j - 1].labels.Add(endOfIfLabel);
+								found = true;
+								break;
+							}
+						}
+
+						if (!found) {
+							brfalseIndex = -1;
+						}
+					}
 				}
 			} else if (op == OpCodes.Newobj && (codes[i].operand as ConstructorInfo)?.DeclaringType?.Name == "WeightedSlot" &&
 				newobjIndex == -1) {

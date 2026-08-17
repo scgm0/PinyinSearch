@@ -4,7 +4,7 @@ namespace PinyinSearch;
 
 [HarmonyPatchCategory("betterhandbook")]
 public static class BetterHandbookCompat {
-	private static string _searchText = string.Empty;
+	static private string _searchText = string.Empty;
 
 	[HarmonyPatch("HandbookCache.HandbookFilterCachePatch", "BuildResults")]
 	[HarmonyPrefix]
